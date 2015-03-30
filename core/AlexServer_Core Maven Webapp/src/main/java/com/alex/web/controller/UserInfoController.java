@@ -38,7 +38,7 @@ public class UserInfoController {
     	List<User> lstUsers = userService.getAllUserByPage(pageNum, pageSize);
     	
         request.setAttribute("lstUsers", lstUsers);
-		return "user";
+		return "views/user";
     } 
     
   

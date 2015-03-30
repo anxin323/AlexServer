@@ -1,5 +1,8 @@
 package com.alex.authenticator.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class UserInfo {
 	private String id;
 	private String usercode;
@@ -7,6 +10,7 @@ public class UserInfo {
 	private String password;
 	private String salt;
 	private int locked;
+	private Set<Role> role;
 	
 	public String getUsercode() {
 		return usercode;
@@ -43,6 +47,12 @@ public class UserInfo {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public Set<Role> getRole() {
+		return role;
+	}
+	public void setRole(Set<Role> role) {
+		this.role = role;
 	}
 	
 }

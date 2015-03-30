@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alex.authenticator.dao.UserInfoMapper;
+import com.alex.authenticator.dao.UserRoleMapper;
+import com.alex.authenticator.model.Permission;
+import com.alex.authenticator.model.Role;
 import com.alex.authenticator.model.UserInfo;
 import com.alex.authenticator.utils.EncryptUtils;
 import com.alex.web.domain.User;
@@ -36,6 +39,9 @@ public class MonitorRealm extends AuthorizingRealm {
 
 	@Autowired
 	private UserInfoMapper userDao;
+	
+	@Autowired
+	private UserRoleMapper userRoleDao;
 	
 	public MonitorRealm() {
 		super();
@@ -65,10 +71,23 @@ public class MonitorRealm extends AuthorizingRealm {
 		/* 这里编写授权代码 */
 		Set<String> roleNames = new HashSet<String>();
 	    Set<String> permissions = new HashSet<String>();
-	    roleNames.add("admin");
-	    permissions.add("user.do?myjsp");
-	    permissions.add("login.do?main");
-	    permissions.add("login.do?logout");
+	    UserInfo userInfo = userRoleDao.findUserByUserName(userName);
+	    if(null==userInfo){
+	    	return new SimpleAuthorizationInfo();
+	    }
+	    for(Role role:userInfo.getRole()){
+	    	LOGGER.debug("roleName=" +role.getName());
+	    	roleNames.add(role.getName());
+	    	for(Permission permission:role.getPermission()){
+	    		permissions.add(permission.getName());
+	    		LOGGER.debug("permissionName=" +permission.getName());
+	    		LOGGER.debug("permissionDesc=" +permission.getDescription());
+	    	}
+	    }
+//	    roleNames.add("admin");
+//	    permissions.add("admin.do?version");
+//	    permissions.add("admin.do?user");
+//	    permissions.add("login.do?logout");
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(roleNames);
 	    info.setStringPermissions(permissions);
 		return info;

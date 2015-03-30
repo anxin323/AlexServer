@@ -12,7 +12,92 @@
 		<spring.version>4.1.5.RELEASE</spring.version>
 		<mybatis.version>3.2.8</mybatis.version>
 		<version.jackson>2.4.4</version.jackson>
+		
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+        <project.deploy>deploy</project.deploy>  
+        <project.tomcat.version>8.0.0-RC5</project.tomcat.version>
 	</properties>
+	
+	
+	<build>  
+        <plugins>  
+            <plugin>  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-compiler-plugin</artifactId>  
+                <version>3.1</version>  
+                <configuration>  
+                    <source>1.7</source>  
+                    <target>1.7</target>  
+                </configuration>  
+            </plugin>  
+  
+<!--   
+            <plugin>  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-resources-plugin</artifactId>  
+                <version>2.6</version>  
+                <executions>  
+                    <execution>  
+                        <id>copy-resources</id>  
+                        <phase>process-resources</phase>  
+                        <goals>  
+                            <goal>resources</goal>  
+                        </goals>  
+                        <configuration>  
+                            <encoding>UTF-8</encoding>  
+                            <outputDirectory>${project.build.directory}/${project.deploy}</outputDirectory>  
+                            <resources>  
+                                <resource>  
+                                    <directory>src/main/resources/</directory>  
+                                    <includes>  
+                                        <include>*.xml</include>  
+                                    </includes>  
+                                </resource>  
+                            </resources>  
+                        </configuration>  
+                    </execution>  
+                </executions>  
+            </plugin>  
+            <plugin>  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-jar-plugin</artifactId>  
+                <version>2.3.2</version>  
+                <configuration>  
+                    <archive>  
+                        <addMavenDescriptor>false</addMavenDescriptor>  
+                    </archive>  
+                    <outputDirectory>${project.build.directory}/${project.deploy}</outputDirectory>  
+                </configuration>  
+                <executions>  
+                    <execution>  
+                        <phase>process-classes</phase>  
+                        <goals>  
+                            <goal>jar</goal>  
+                        </goals>  
+                        <configuration>  
+                            <excludes>  
+                                <exclude>*.properties</exclude>  
+                            </excludes>  
+                        </configuration>  
+                    </execution>  
+                </executions>  
+            </plugin>  
+ -->  
+  
+            <plugin>  
+                <groupId>org.apache.tomcat.maven</groupId>  
+                <artifactId>tomcat7-maven-plugin</artifactId>  
+                <version>2.2</version>  
+                <configuration>  
+                    <url>http://localhost:8080/manager/text</url>  
+                    <username>sole</username>  
+                    <password>sole</password>  
+                    <path>/${project.artifactId}</path>  
+                </configuration>  
+            </plugin>  
+  
+        </plugins>  
+    </build>
 
 	<repositories>
 
@@ -42,6 +127,14 @@
 	</repositories>
 
 	<dependencies>
+		<dependency>  
+            <groupId>org.apache.tomcat</groupId>  
+            <artifactId>tomcat-servlet-api</artifactId>  
+            <version>${project.tomcat.version}</version>  
+            <scope>provided</scope>  
+        </dependency>
+	
+	
 		<!-- 添加Spring-core包 -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -230,7 +323,4 @@
 
 	</dependencies>
 
-	<build>
-		<finalName>AlexServer_Core</finalName>
-	</build>
 </project>

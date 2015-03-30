@@ -9,7 +9,7 @@
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
 		<!-- 登录路径 --> 
-		<property name="loginUrl" value="/index.jsp" />
+		<property name="loginUrl" value="/index.html" />
 		<!-- 登录成功后跳转路径 -->  
 		<property name="successUrl" value="/main.jsp" />
 		<!-- 授权失败跳转路径 --> 
@@ -24,12 +24,26 @@
         <!-- 过滤链定义 --> 
 		<property name="filterChainDefinitions">
 			<value>
-				/login.jsp* = anon
+			 <!-- # static file chains  --> 
+            /js/* = anon  
+            /css/* = anon  
+            /img/* = anon  
+            /images/* = anon  
+            /errors/* = anon  
+               
+            <!-- # login/logout chain  --> 
+            /login.do* = anon  
+               
+            <!-- # some example chain definitions:  --> 
+            /admin.do* = authc, roles[admin]  
+            /user.do* = authc
+
+				<!-- /login.jsp* = anon
 				/login.do?main = anon
 				/index.jsp* = anon
 				/errors/*.jsp* = anon
 				/views/*.jsp* = authc
-				/getUser.do* = authc
+				/getUser.do* = authc -->
 			</value>
 		</property>
 	</bean>

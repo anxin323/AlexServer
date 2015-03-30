@@ -11,17 +11,15 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.authenticator.model.UserInfo;
 import com.alex.authenticator.utils.EncryptUtils;
-import com.alex.web.controller.UserInfoController;
 
 @Controller
 @RequestMapping(value = "login")
 public class LoginController {
 	private static final Log LOGGER = LogFactory
-			.getLog(UserInfoController.class);
+			.getLog(LoginController.class);
 
 	/*
 	 * @Autowired User user;
@@ -47,7 +45,7 @@ public class LoginController {
 			currentUser.login(token);
 		} catch (AuthenticationException e) {
 			request.setAttribute("message", "用户名密码错误，请重新登陆!");
-			view = "/login";
+			view = "/index";
 			e.printStackTrace();
 
 		}
@@ -55,11 +53,11 @@ public class LoginController {
 			user.setUserName("张三");
 			session.setAttribute("userinfo", user);
 			// view="redirect:/getUser.do";
-			view = "/main";
+			view = "/views/main";
 			// response.sendRedirect("getUser.do");
 		} else {
 			request.setAttribute("message", "用户名密码错误，请重新登陆!");
-			view = "/login";
+			view = "/index";
 		}
 		LOGGER.debug("Login Cotroller return:" + view);
 		return view;
@@ -80,45 +78,9 @@ public class LoginController {
 			e.printStackTrace();
 
 		}
-		return "/login";
+		LOGGER.debug("Login Cotroller return:index");
+		return "/index";
 	}
 
-	@RequestMapping(params = "report")
-	public String report() {
-
-		LOGGER.debug("Controller：数据统计");
-		return "/report";
-	}
-
-	@RequestMapping(params = "version")
-	public String version(HttpSession session) {
-
-		if (session.getAttribute("userinfo")==null){
-			LOGGER.debug("Controller：版本升级-未登录");
-			return "/login";
-		}
-		LOGGER.debug("Controller：版本升级");
-		return "/version";
-	}
 	
-	@RequestMapping(params = "message")
-	public String message(HttpSession session) {
-
-		if (session.getAttribute("userinfo")==null){
-			LOGGER.debug("Controller：消息设置-未登录");
-			return "/login";
-		}
-		LOGGER.debug("Controller：消息设置");
-		return "/message";
-	}
-	
-	@RequestMapping(params = "online")
-	public String online(HttpSession session) {
-		if (session.getAttribute("userinfo")==null){
-			LOGGER.debug("Controller：在线用户-未登录");
-			return "/login";
-		}
-		LOGGER.debug("Controller：在线用户");
-		return "/online";
-	}
 }

@@ -87,14 +87,14 @@
 
 		<div class="header">
 			<ul class="headermenu">
-				<li><a href="login.do?main"><span
+				<li><a href="user.do?main"><span
 						class="icon icon-flatscreen"></span>系统首页</a></li>
-				<li><a href="getUser.do?pageNum=1"><span
+				<li><a href="user.do?online&pageNum=1"><span
 						class="icon icon-speech"></span>在线用户</a></li>
-				<li><a href="login.do?version"><span
+				<li><a href="user.do?version"><span
 						class="icon icon-pencil"></span>版本升级</a></li>
-				<li><a href="login.do?message"><span class="icon icon-message"></span>消息设置</a></li>
-				<li><a href="login.do?report"><span class="icon icon-chart"></span>应用数据</a></li>
+				<li><a href="user.do?message"><span class="icon icon-message"></span>消息设置</a></li>
+				<li><a href="user.do?report"><span class="icon icon-chart"></span>应用数据</a></li>
 			</ul>
 
 			<div class="headerwidget">
