@@ -8,58 +8,64 @@
 	<description>Shiro 配置</description>
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
-		<!-- 登录路径 --> 
+		<!-- 登录路径 -->
 		<property name="loginUrl" value="/index.html" />
-		<!-- 登录成功后跳转路径 -->  
+		<!-- 登录成功后跳转路径 -->
 		<property name="successUrl" value="/main.jsp" />
-		<!-- 授权失败跳转路径 --> 
+		<!-- 授权失败跳转路径 -->
 		<property name="unauthorizedUrl" value="/errors/403.jsp" />
-		<!-- 添加自定义验证拦截器 -->  
-	<!-- 	<property name="filters">  
-            <util:map>  
-                <entry key="authc" value-ref="myAuthenFilter" />  
-            </util:map>  
-        </property>   -->
-        
-        <!-- 过滤链定义 --> 
+		<!-- 添加自定义验证拦截器 -->
+		<!-- <property name="filters"> <util:map> <entry key="authc" value-ref="myAuthenFilter" 
+			/> </util:map> </property> -->
+
+		<!-- 过滤链定义 -->
 		<property name="filterChainDefinitions">
 			<value>
-			 <!-- # static file chains  --> 
-            /js/* = anon  
-            /css/* = anon  
-            /img/* = anon  
-            /images/* = anon  
-            /errors/* = anon  
-               
-            <!-- # login/logout chain  --> 
-            /login.do* = anon  
-               
-            <!-- # some example chain definitions:  --> 
-            /admin.do* = authc, roles[admin]  
-            /user.do* = authc
+				<!-- # static file chains -->
+				/js/* = anon
+				/css/* = anon
+				/img/* = anon
+				/images/* = anon
+				/errors/* = anon
 
-				<!-- /login.jsp* = anon
-				/login.do?main = anon
-				/index.jsp* = anon
-				/errors/*.jsp* = anon
-				/views/*.jsp* = authc
-				/getUser.do* = authc -->
+				<!-- # login/logout chain -->
+				/login.do* = anon
+
+				<!-- # some example chain definitions: -->
+				/admin.do* = authc, roles[admin]
+				/user.do* = authc
+
+				<!-- /login.jsp* = anon /login.do?main = anon /index.jsp* = anon /errors/*.jsp* 
+					= anon /views/*.jsp* = authc /getUser.do* = authc -->
 			</value>
 		</property>
 	</bean>
-	
-	 <!-- 自定义验证拦截器 -->  
-    <!-- <bean id="myAuthenFilter" class="com.alex.authenticator.filter.AuthenticationFilter" />  -->
+
+	<!-- 自定义验证拦截器 -->
+	<!-- <bean id="myAuthenFilter" class="com.alex.authenticator.filter.AuthenticationFilter" 
+		/> -->
 
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<!--设置自定义realm -->
 		<property name="realm" ref="monitorRealm" />
+		<!--注入缓存管理器 -->
+		<property name="cacheManager" ref="shiroEhcacheManager"></property>
 	</bean>
 
-	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+	<!-- shiro的缓存管理器，然后需要将缓存管理器注入 到安全管理其中 -->
+	<bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<!--classpath是缓存属性的配置文件 -->
+		<property name="cacheManagerConfigFile" value="classpath:ehcache-shiro.xml" />
+	</bean>
 
 	<!--自定义Realm 继承自AuthorizingRealm -->
-	<bean id="monitorRealm" class="com.alex.authenticator.service.MonitorRealm"></bean>
+	<bean id="monitorRealm" class="com.alex.authenticator.service.MonitorRealm">
+		<property name="cachingEnabled" value="true" />
+		<property name="authenticationCachingEnabled" value="true" />
+		<property name="authenticationCacheName" value="authenticationCache" />
+		<property name="authorizationCachingEnabled" value="true" />
+		<property name="authorizationCacheName" value="authorizationCache" />
+	</bean>
 	<!-- securityManager -->
 	<bean
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
@@ -67,6 +73,8 @@
 			value="org.apache.shiro.SecurityUtils.setSecurityManager" />
 		<property name="arguments" ref="securityManager" />
 	</bean>
+
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 
 	<!-- Enable Shiro Annotations for Spring-configured beans. Only run after -->
 	<!-- the lifecycleBeanProcessor has run: -->

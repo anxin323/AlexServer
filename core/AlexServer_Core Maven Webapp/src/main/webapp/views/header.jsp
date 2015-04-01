@@ -67,7 +67,7 @@
 					</div>
 					<!--avatar-->
 					<div class="userdata">
-						<h4>江锦良</h4>
+						<h4>${sessionScope.userinfo.userName}</h4>
 						<span class="email">jiang-alex@qq.com</span>
 						<ul>
 							<li><a href="editprofile.html">编辑资料</a></li>

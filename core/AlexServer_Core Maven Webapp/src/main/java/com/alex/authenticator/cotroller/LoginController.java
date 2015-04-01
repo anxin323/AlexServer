@@ -1,5 +1,7 @@
 package com.alex.authenticator.cotroller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -8,12 +10,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alex.authenticator.model.UserInfo;
 import com.alex.authenticator.utils.EncryptUtils;
+import com.alex.common.utils.DateUtils;
 
 @Controller
 @RequestMapping(value = "login")
@@ -50,8 +55,12 @@ public class LoginController {
 
 		}
 		if (currentUser.isAuthenticated()) {
-			user.setUserName("张三");
+			//user.setUserName("张三");
 			session.setAttribute("userinfo", user);
+			
+			Session shiroSession = currentUser.getSession();
+			Date date = shiroSession.getStartTimestamp();
+			LOGGER.debug("StartTimestamp is "+ DateUtils.getFormatedDate(date, "yyyy-MM-dd HH:mm:ss"));
 			// view="redirect:/getUser.do";
 			view = "/views/main";
 			// response.sendRedirect("getUser.do");

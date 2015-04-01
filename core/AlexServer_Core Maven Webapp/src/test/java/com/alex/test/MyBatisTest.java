@@ -14,6 +14,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.alex.authenticator.model.Permission;
 import com.alex.authenticator.model.Role;
 import com.alex.authenticator.model.UserInfo;
+import com.alex.authenticator.model.UserRoleLink;
 import com.alex.authenticator.service.UserInfoServiceI;
 import com.alex.web.domain.User;
 import com.alex.web.service.UserServiceI;
@@ -84,5 +85,17 @@ public class MyBatisTest {
     		}
     	}
     }
+    
+/*    @Test
+    public void testInsertUserRole(){
+    	UserRoleLink userRoleLink = new UserRoleLink();
+    	Role role= new Role();
+    	role.setId(5);
+		userRoleLink.setRole(role);
+    	UserInfo userInfo = new UserInfo();
+    	userInfo.setId("1");
+		userRoleLink.setUserInfo(userInfo);
+    	userInfoService.modifyUserRole(userRoleLink);
+    }*/
     
 }
