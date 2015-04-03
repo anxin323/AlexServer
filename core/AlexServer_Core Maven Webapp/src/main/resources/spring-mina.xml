@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<!-- 配置sessionconfig -->
+	<bean id="sessionConfig" factory-bean="ioAcceptor" factory-method="getSessionConfig">
+		<property name="bothIdleTime" value="2" />
+		<property name="receiveBufferSize" value="1024" />
+	</bean>
+	<!--配置socket -->
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.net.SocketAddress"
+					value="org.apache.mina.integration.beans.InetSocketAddressEditor">
+				</entry>
+				<!-- <entry key="java.net.SocketAddress"> <bean class="org.apache.mina.integration.beans.InetSocketAddressEditor" 
+					/> </entry> -->
+			</map>
+		</property>
+	</bean>
+
+	<bean id="mainIOHandler" class="com.alex.network.handler.MainIOHandler">
+		<property name="handlers">
+
+			<map>
+				<entry key="client_auth">
+					<bean class="com.alex.network.handler.AuthHandler" />
+				</entry>
+				<entry key="client_logout">
+					<bean class="com.alex.network.handler.LogoutHandler" />
+				</entry>
+				<entry key="client_heartbeat">
+					<bean class="com.alex.network.handler.HeartbeatHandler" />
+				</entry>
+				<entry key="sessionClosedHander">
+					<bean class="com.alex.network.handler.SessionClosedHandler" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="ioAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor"
+		init-method="bind" destroy-method="unbind">
+		<property name="defaultLocalAddress" value=":1235" />
+		<property name="handler" ref="mainIOHandler" />
+		<property name="filterChainBuilder" ref="filterChainBuilder" />
+		<property name="reuseAddress" value="true" />
+
+	</bean>
+	<!-- <bean id="executorFilter" class="org.apache.mina.filter.executor.ExecutorFilter" 
+		/> <bean id="mdcInjectionFilter" class="org.apache.mina.filter.logging.MdcInjectionFilter"> 
+		<constructor-arg value="remoteAddress" /> </bean> -->
+	<!--配置自己的编码器 -->
+	<!-- <bean id="codecFilter" class="org.apache.mina.filter.codec.ProtocolCodecFilter"> 
+		<constructor-arg> <bean class="org.apache.mina.filter.codec.textline.TextLineCodecFactory" 
+		/> <bean class="com.alex.network.filter.MyProtocalCodecFactory"> <constructor-arg 
+		value="utf-8"></constructor-arg> </bean> <bean class="cn.org.handler.MyCodeFactory"></bean> 
+		</constructor-arg> </bean> 配置mina自带的编码器 <bean id="loggingFilter" class="org.apache.mina.filter.logging.LoggingFilter" 
+		/> boss server 将编码器加入编码链表中 <bean id="filterChainBuilder" class="org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder"> 
+		<property name="filters"> <map> <entry key="executor" value-ref="executorFilter" 
+		/> <entry key="mdcInjectionFilter" value-ref="mdcInjectionFilter" /> <entry 
+		key="codecFilter" value-ref="codecFilter" /> <entry key="loggingFilter" value-ref="loggingFilter" 
+		/> </map> </property> </bean> -->
+
+	<bean id="filterChainBuilder"
+		class="org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder">
+		<property name="filters">
+			<map>
+
+				<entry key="logging">
+					<bean class="org.apache.mina.filter.logging.LoggingFilter" />
+				</entry>
+
+				<entry key="codec">
+					<bean class="org.apache.mina.filter.codec.ProtocolCodecFilter">
+						<constructor-arg>
+							<bean class="com.alex.network.filter.ServerMessageCodecFactory" />
+						</constructor-arg>
+					</bean>
+				</entry>
+
+				<entry key="executor">
+					<bean class="org.apache.mina.filter.executor.ExecutorFilter">
+						<constructor-arg index="0" value="5" />
+						<constructor-arg index="1" value="10" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+</beans>
