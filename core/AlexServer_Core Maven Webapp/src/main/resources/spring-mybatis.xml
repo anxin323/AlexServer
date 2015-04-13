@@ -10,7 +10,8 @@ http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 http://www.springframework.org/schema/aop 
 http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 ">
-
+	<!-- 需要使用CGLIB强制代理 -->
+   <!--  <aop:aspectj-autoproxy proxy-target-class="true"/> -->
 	<!-- JNDI方式配置数据源 -->
 	<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> 
 		<property name="jndiName" value="${jndiName}"></property> </bean> -->

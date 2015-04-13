@@ -3,7 +3,12 @@ package com.alex.network.session;
 import java.util.Collection;
 
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import com.alex.common.context.ContextHolder;
 import com.alex.network.eneity.CIMSession;
 import com.alex.network.service.SessionManagerService;
 
@@ -12,12 +17,15 @@ import com.alex.network.service.SessionManagerService;
  * 集群 session管理实现示例， 各位可以自行实现 AbstractSessionManager接口来实现自己的 session管理
  * 服务器集群时 须要将CIMSession 信息存入数据库或者nosql 等 第三方存储空间中，便于所有服务器都可以访问
  */ 
+@Component(value="clusterSessionManager")
 public class ClusterSessionManager  implements SessionManager{
+	@Autowired
+	@Qualifier("sessionManagerServiceImpl")
 	private SessionManagerService database ;
 
-	public void setDatabase(SessionManagerService database) {
-		this.database = database;
-	}
+//	public void setDatabase(SessionManagerService database) {
+//		this.database = database;
+//	}
 	
 	// session save db
 	@Override
@@ -40,9 +48,9 @@ public class ClusterSessionManager  implements SessionManager{
         CIMSession session = database.getSession(account);
         if(session!=null){
         	try{
-        		/*session.setIoSession(((NioSocketAcceptor)
-        				ContextHolder.getBean("serverAcceptor")).
-        				getManagedSessions().get(session.getNid()));  */
+        		session.setIoSession(((NioSocketAcceptor)
+        				ContextHolder.getBean("ioAcceptor")).
+        				getManagedSessions().get(session.getNid()));  
         	}
         	catch(Exception ex){
         		System.out.println("setIoSession Err is "+ex.getMessage());

@@ -1,4 +1,4 @@
-package com.alex.authenticator.cotroller;
+package com.alex.authenticator.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

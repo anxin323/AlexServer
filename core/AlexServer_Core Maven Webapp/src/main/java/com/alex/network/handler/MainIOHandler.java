@@ -27,7 +27,7 @@ public class MainIOHandler extends IoHandlerAdapter{
 	private HashMap<String, CIMRequestHandler> handlers = new HashMap<String, CIMRequestHandler>();
 
 	public void sessionCreated(IoSession session) throws Exception {
-		logger.warn("sessionCreated()... from "+ session.getRemoteAddress().toString());
+		//logger.warn("sessionCreated()... from "+ session.getRemoteAddress().toString());
 	
 	}
 
@@ -51,13 +51,12 @@ public class MainIOHandler extends IoHandlerAdapter{
 			SentBody body = (SentBody) message;
 			String key = body.getKey();
 			// spring aop inject
-			//CIMRequestHandler handler = handlers.get(key);
-			CIMRequestHandler handler = new AuthHandler();
+			CIMRequestHandler handler = handlers.get(key);
+			//CIMRequestHandler handler = new AuthHandler();
 			if (handler == null) {
 				reply.setCode(CIMConstant.ReturnCode.CODE_405);
 				reply.setCode("KEY [" + key + "] 服务端未定义");
 			} else {
-				// base diff of request,process result diff
 				reply = handler.process(cimSession, body);
 			}
 
@@ -78,11 +77,12 @@ public class MainIOHandler extends IoHandlerAdapter{
 	 * session close time,execute this function
 	 */
 	public void sessionClosed(IoSession ios) throws Exception {
-		logger.warn("MainIOHandler:sessionClosed...");
+		logger.warn("MainIOHandler:sessionClosed.RemoteAddress is "+ios.getRemoteAddress());
+		
 		try {
 			CIMSession cimSession = new CIMSession(ios);
-			logger.warn("sessionClosed()... from "
-					+ cimSession.getRemoteAddress());
+//			logger.warn("sessionClosed()... from "
+//					+ cimSession.getRemoteAddress());
 			CIMRequestHandler handler = handlers.get("sessionClosedHander");
 			if (handler != null
 					&& cimSession.containsAttribute(CIMConstant.SESSION_KEY)) {
@@ -97,8 +97,8 @@ public class MainIOHandler extends IoHandlerAdapter{
 	 */
 	public void sessionIdle(IoSession session, IdleStatus status)
 			throws Exception {
-		logger.warn("sessionIdle()... from "
-				+ session.getRemoteAddress().toString());
+//		logger.warn("sessionIdle()... from "
+//				+ session.getRemoteAddress().toString());
 		CIMSession cimSession = new CIMSession(session);
 		/*if (!session.containsAttribute(CIMConstant.SESSION_KEY)) {
 			cimSession.close(true);
@@ -143,8 +143,8 @@ public class MainIOHandler extends IoHandlerAdapter{
 		// 设置心跳时间
 		CIMSession cimSession = new CIMSession(session);
 		cimSession.setHeartbeat(System.currentTimeMillis());
-		logger.warn("MainIOHandler:messageSent loginTime is "+cimSession.getAttribute("loginTime"));
-		logger.warn("MainIOHandler:messageSent account is "+cimSession.getAttribute(CIMConstant.SESSION_KEY));
+		//logger.warn("MainIOHandler:messageSent loginTime is "+cimSession.getAttribute("loginTime"));
+		//logger.warn("MainIOHandler:messageSent account is "+cimSession.getAttribute(CIMConstant.SESSION_KEY));
 
 		
 	}

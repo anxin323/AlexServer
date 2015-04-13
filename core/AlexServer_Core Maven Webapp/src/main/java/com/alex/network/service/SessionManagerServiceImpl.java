@@ -4,34 +4,47 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.alex.cache.SessionDaoI;
+import com.alex.cache.SessionDaoImpl;
 import com.alex.common.utils.Pages;
+import com.alex.common.utils.SessionUtil;
 import com.alex.network.eneity.CIMSession;
 import com.alex.network.eneity.IMSession;
 
+@Service(value="sessionManagerServiceImpl")
 public class SessionManagerServiceImpl implements SessionManagerService {
-	/*@Resource
-	private SessionManagerDaoImpl sessionDao; 
+	//@Resource
+	@Autowired
+	@Qualifier("sessionDao")  
+	private SessionDaoI sessionDao;
+	private Object save; 
 
 
-	public SessionManagerDaoImpl getSessionDao() {
-		return sessionDao;
-	}
+//	public SessionDaoImpl getSessionDao() {
+//		return sessionDao;
+//	}
+//
+//	public void setSessionDao(SessionDaoI sessionDao) {
+//		this.sessionDao = sessionDao;
+//	}
 
-	public void setSessionDao(SessionManagerDaoImpl sessionDao) {
-		this.sessionDao = sessionDao;
-	}
-*/
 
 	@Override
 	public void save(CIMSession session) {
-/*		IMSession sm=SessionUtil.SMtransform(session);
+		IMSession sm=SessionUtil.SMtransform(session);
 		//IP获取为空不需保存
 		if(String.valueOf(sm.getHost()).equals("null")){
 			return;
 		}
 		// set online 
 		sm.setStatus("1"); 
-		sessionDao.save(sm);*/
+		sessionDao.save(sm);
 	}
 	
 	@Override
@@ -44,9 +57,8 @@ public class SessionManagerServiceImpl implements SessionManagerService {
 	
 	@Override
 	public CIMSession getSession(String account) {
-		return null;
-//		IMSession sm = sessionDao.getSession(account);
-//		return SessionUtil.CIMTransform(sm);
+		IMSession sm = sessionDao.getSessionByAccount(account);
+		return SessionUtil.CIMTransform(sm);
 	}
 
 	@Override
@@ -70,7 +82,7 @@ public class SessionManagerServiceImpl implements SessionManagerService {
 
 	@Override
 	public void removeAccountSession(String account) {
-//		sessionDao.removeAccountSession(account);
+		sessionDao.delete(account);
 	}
 
 	@Override

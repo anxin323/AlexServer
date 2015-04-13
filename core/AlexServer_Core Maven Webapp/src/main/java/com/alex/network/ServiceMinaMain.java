@@ -9,12 +9,8 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.alex.authenticator.service.UserInfoServiceI;
-import com.alex.network.dao.SessionDaoI;
-import com.alex.network.dao.UserDAOImpl;
 import com.alex.network.filter.ServerMessageCodecFactory;
 import com.alex.network.handler.MainIOHandler;
-import com.alex.web.service.UserServiceI;
 
 public class ServiceMinaMain {
 

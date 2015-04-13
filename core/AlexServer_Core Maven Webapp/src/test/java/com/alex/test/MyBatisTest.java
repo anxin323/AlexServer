@@ -1,47 +1,33 @@
 
 package com.alex.test;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.mina.core.session.IdleStatus;
-import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import com.alex.authenticator.model.Permission;
 import com.alex.authenticator.model.Role;
 import com.alex.authenticator.model.UserInfo;
-import com.alex.authenticator.model.UserRoleLink;
 import com.alex.authenticator.service.UserInfoServiceI;
-import com.alex.common.utils.DateUtils;
-import com.alex.network.dao.SessionDaoI;
-import com.alex.network.dao.UserDAOImpl;
-import com.alex.network.eneity.IMSession;
-import com.alex.network.filter.ServerMessageCodecFactory;
-import com.alex.network.handler.MainIOHandler;
+import com.alex.network.eneity.CIMSession;
+import com.alex.network.session.SessionManager;
 import com.alex.web.domain.User;
 import com.alex.web.service.UserServiceI;
 
 
 
 public class MyBatisTest {
-
+	Log log = LogFactory.getLog(MyBatisTest.class);
     private UserServiceI userService;
     private UserInfoServiceI userInfoService;
-    private UserDAOImpl userDAO;
-    private SessionDaoI sessionDao;
+    //private UserDAOImpl userDAO;
+//    private SessionDaoI sessionDao;
+    private SessionManager clusterSession;
     
     /**
      * 这个before方法在所有的测试方法之前执行，并且只执行一次
@@ -55,8 +41,9 @@ public class MyBatisTest {
         //从Spring容器中根据bean的id取出我们要使用的userService对象
         userService = (UserServiceI) ac.getBean("userService");
         userInfoService = (UserInfoServiceI) ac.getBean("userInfoService");
-        userDAO = (UserDAOImpl) ac.getBean("userDAO");
-        sessionDao = (SessionDaoI) ac.getBean("sessionDao");
+ //       userDAO = (UserDAOImpl) ac.getBean("userDAO");
+//        sessionDao = (SessionDaoI) ac.getBean("sessionDao");
+        clusterSession = (SessionManager) ac.getBean("clusterSessionManager");
     }
     
 //    @Test
@@ -76,30 +63,34 @@ public class MyBatisTest {
     
     @Test
     public void testRedis(){
-    	Log log = LogFactory.getLog(UserDAOImpl.class);
+    	//Log log = LogFactory.getLog(UserDAOImpl.class);
 		log.warn("begin");
-		IMSession session =sessionDao.getSessionByAccount("alex");
-		System.out.println("session="+session.toString());
+		//IMSession session =sessionDao.getSessionByAccount("alex");
+		CIMSession session =clusterSession.getSession("alex");
+		System.out.println("host="+session.getHost());
+		System.out.println("DeviceModel="+session.getDeviceModel());
+		System.out.println("gid="+session.getGid());
 		//log.warn("get value from redis="+userDAO.getString("alex"));
 		log.warn("end");
     }
     
     @Test
     public void saveSession(){
-    	Log log = LogFactory.getLog(UserDAOImpl.class);
+    	//Log log = LogFactory.getLog(UserDAOImpl.class);
 		log.warn("begin");
-		IMSession session = new IMSession();
+		CIMSession session = new CIMSession();
 		session.setAccount("alex");
 		session.setHost("113.77.88.99");
 		session.setGid("d5f648sdf2d5f4sd5fgyuiouyvfb");
-		session.setNid("ertfbb56xkooop1881fd238sdas6");
-		session.setDeviceid("235441as1d651sad51asas2d1s");
-		session.setBindtime(System.currentTimeMillis()+"");
-		session.setHeartbeat(DateUtils.getCurrentDate("yy-MM-dd HH:mm:ss"));
+		session.setNid(213871982392L);
+		session.setDeviceId("235441as1d651sad51asas2d1s");
+		session.setBindTime(System.currentTimeMillis());
+		session.setHeartbeat(System.currentTimeMillis());
 		session.setChannel("IOS");
-		session.setDevicemodel("IPhone6 plus");
-		session.setStatus("1");
-		sessionDao.save(session);
+		session.setDeviceModel("IPhone6 plus");
+		//session.setStatus("1");
+		clusterSession.addSession("alex", session);
+//		sessionDao.save(session);
 		//log.warn("get value from redis="+userDAO.getString("alex"));
 		log.warn("end");
     }

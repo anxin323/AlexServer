@@ -12,9 +12,13 @@
 		<!-- 配置spring.xml和spring-mybatis.xml这两个配置文件的位置，固定写法 -->
 		<param-value>classpath:spring.xml,classpath:spring-mybatis.xml,classpath:spring-shiro.xml,classpath:spring-mina.xml</param-value>
 	</context-param>
-	<listener>
+<!-- 	<listener>
 		<description>Spring监听器</description>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener> -->
+	
+	<listener>
+		<listener-class>com.alex.common.context.ContainerBeanLoaderListener</listener-class>
 	</listener>
 
 	<!-- 日志记录 -->

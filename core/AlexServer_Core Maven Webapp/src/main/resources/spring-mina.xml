@@ -6,7 +6,7 @@
 		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 	<!-- 配置sessionconfig -->
 	<bean id="sessionConfig" factory-bean="ioAcceptor" factory-method="getSessionConfig">
-		<property name="bothIdleTime" value="2" />
+		<property name="bothIdleTime" value="100" />
 		<property name="receiveBufferSize" value="1024" />
 	</bean>
 	<!--配置socket -->

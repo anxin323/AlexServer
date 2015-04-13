@@ -1,4 +1,4 @@
-package com.alex.authenticator.cotroller;
+package com.alex.authenticator.controller;
 
 import java.util.List;
 

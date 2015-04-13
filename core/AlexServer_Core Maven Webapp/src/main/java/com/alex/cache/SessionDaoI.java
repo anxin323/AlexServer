@@ -1,4 +1,4 @@
-package com.alex.network.dao;
+package com.alex.cache;
 
 import com.alex.network.eneity.IMSession;
 

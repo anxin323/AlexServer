@@ -25,7 +25,8 @@ public   interface  CIMConstant  {
 		
 	}
 	
-	public static byte  MESSAGE_SEPARATE='b';
+	//public static byte  MESSAGE_SEPARATE='\b';
+	public static byte  MESSAGE_SEPARATE='@';
 	
 	public static byte  FlEX_SEPARATE='\0';
 	

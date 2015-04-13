@@ -18,7 +18,7 @@ public class HeartbeatHandler implements CIMRequestHandler {
 
 	public ReplyBody process(CIMSession session, SentBody message) {
 
-		logger.warn("heartbeat... from "+session.getRemoteAddress().toString());
+		logger.warn(session.getAccount()+" heartbeat... from "+session.getRemoteAddress().toString());
 		ReplyBody reply = new ReplyBody();
 		reply.setKey(CIMConstant.RequestKey.CLIENT_HEARTBEAT);
 		reply.setCode(CIMConstant.ReturnCode.CODE_200);

@@ -1,4 +1,4 @@
-package com.alex.network.dao;
+package com.alex.cache;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -12,11 +12,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.alex.network.eneity.IMSession;
 
-@Service("sessionDao")
+@Repository(value="sessionDao")
 public class SessionDaoImpl implements SessionDaoI {
 	@Autowired
 	private RedisTemplate<Serializable, Serializable> redisTemplate;
@@ -103,6 +104,9 @@ public class SessionDaoImpl implements SessionDaoI {
 						stringToBytes("status"));
 
 				IMSession session = new IMSession();
+				if(resultList.get(0)==null){
+					return null;
+				}
 				session.setAccount(bytesToString(resultList.get(0)));
 				session.setGid(bytesToString(resultList.get(1)));
 				session.setNid(bytesToString(resultList.get(2)));

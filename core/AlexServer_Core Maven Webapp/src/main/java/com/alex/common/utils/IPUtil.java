@@ -15,8 +15,9 @@ public class IPUtil {
 	
 	public static String getServerIp() {
 		if(serverIp==null){
-			ResourceBundle resource = ResourceBundle.getBundle("config");
-			serverIp = resource.getString("cimServerIp");
+			//ResourceBundle resource = ResourceBundle.getBundle("config");
+			//serverIp = resource.getString("cimServerIp");
+			serverIp = "192.168.1.120";
 		}
 		return serverIp;
 	}
